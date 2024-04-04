@@ -1,11 +1,13 @@
 import { ProForm, ProFormRadio, ProFormText } from '@ant-design/pro-components';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import './home.css';
 import { Button } from 'antd';
 import logo from '../logo.svg';
 
 function Home() {
-  const [readonly, setReadoly] = useState(false);
+  const [readonly, setReadoly] = useState(!!localStorage.getItem('userId'));
+
+  useEffect(() => {}, []);
 
   return (
     <div className="profile-container">
