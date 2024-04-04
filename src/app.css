@@ -3,14 +3,6 @@ body {
   padding: 0;
   margin: 0;
 }
-.app {
-  text-align: center;
-}
-
-.app-logo {
-  height: 10vmin;
-  pointer-events: none;
-}
 
 .app-header {
   min-height: 100vh;
