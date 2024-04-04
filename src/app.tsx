@@ -2,6 +2,8 @@ import './app.css';
 
 import { Navigate, Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 
+import { ConfigProvider } from 'antd';
+import enUS from 'antd/locale/en_US';
 import About from './pages/about';
 import Home from './pages/home';
 
@@ -24,7 +26,9 @@ export default function WrappedApp() {
 
   return (
     <Router basename={basename}>
-      <App />
+      <ConfigProvider locale={enUS}>
+        <App />
+      </ConfigProvider>
     </Router>
   );
 }

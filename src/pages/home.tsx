@@ -1,21 +1,18 @@
-import { Link } from 'react-router-dom';
-
+import { ProForm, ProFormText } from '@ant-design/pro-components';
 import logo from '../logo.svg';
+import './home.css';
 
 function Home() {
   return (
-    <header className="app-header">
+    <div className="profile-container">
       <img src={logo} className="app-logo" alt="logo" />
-      <pre style={{ textAlign: 'left' }}>
-        <code>window.blocklet = {JSON.stringify(window.blocklet, null, 2)}</code>
-      </pre>
-      <Link className="app-link" to="/about">
-        About
-      </Link>
-      <a className="app-link" href="https://developer.blocklet.io/docs/" target="_blank" rel="noopener noreferrer">
-        Learn Blocklet
-      </a>
-    </header>
+      <div className="app-link">User Profile</div>
+      <ProForm className="profile-form">
+        <ProFormText name="username" label="Username" />
+        <ProFormText name="email" label="Email" />
+        <ProFormText name="phone" label="Phone" />
+      </ProForm>
+    </div>
   );
 }
 
