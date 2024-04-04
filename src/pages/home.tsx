@@ -33,18 +33,22 @@ function Home() {
         submitter={readonly ? false : { resetButtonProps: false }}
         className="profile-form"
         onFinish={async (values) => {
-          if (userId) {
-            await axios.put<User>(`/api/user/${userId}`, values);
-          } else {
-            const { data: user } = await axios.post<User>('/api/user', values);
-            localStorage.setItem(USER_ID, String(user.id));
-            setUserId(String(user.id));
+          try {
+            if (userId) {
+              await axios.put<User>(`/api/user/${userId}`, values);
+            } else {
+              const { data: user } = await axios.post<User>('/api/user', values);
+              localStorage.setItem(USER_ID, String(user.id));
+              setUserId(String(user.id));
+            }
+            message.success('success');
+            await setReadoly(true);
+          } catch (error) {
+            message.error(error.response.data.errors.map((err: any) => <div>{err.msg}</div>));
           }
-          message.success('success');
-          await setReadoly(true);
         }}>
         <ProFormText name="username" label="name" rules={[{ required: true }]} readonly={readonly} />
-        <ProFormText name="email" label="email" rules={[{ required: true }, { type: 'email' }]} readonly={readonly} />
+        <ProFormText name="email" label="email" rules={[{ required: true }]} readonly={readonly} />
         <ProFormText name="phone" label="phone" rules={[{ required: true }]} readonly={readonly} />
         <ProFormRadio.Group
           label="gender"
