@@ -1,13 +1,26 @@
 import { ProForm, ProFormRadio, ProFormText } from '@ant-design/pro-components';
 import { useEffect, useState } from 'react';
 import './home.css';
-import { Button } from 'antd';
+import { Button, message } from 'antd';
+import axios from 'axios';
+import { User } from '@prisma/client';
 import logo from '../logo.svg';
 
-function Home() {
-  const [readonly, setReadoly] = useState(!!localStorage.getItem('userId'));
+const USER_ID = 'userId';
 
-  useEffect(() => {}, []);
+function Home() {
+  const [userId, setUserId] = useState(localStorage.getItem(USER_ID));
+  const [readonly, setReadoly] = useState(!!userId);
+  const [form] = ProForm.useForm();
+
+  useEffect(() => {
+    if (userId) {
+      (async () => {
+        const { data: user } = await axios.get<User>(`/api/user/${userId}`);
+        form.setFieldsValue(user);
+      })();
+    }
+  }, [userId, form]);
 
   return (
     <div className="profile-container">
@@ -16,31 +29,40 @@ function Home() {
         <div className="app-link">User Profile</div>
       </div>
       <ProForm
+        form={form}
         submitter={readonly ? false : { resetButtonProps: false }}
         className="profile-form"
-        onFinish={async () => {
+        onFinish={async (values) => {
+          if (userId) {
+            await axios.put<User>(`/api/user/${userId}`, values);
+          } else {
+            const { data: user } = await axios.post<User>('/api/user', values);
+            localStorage.setItem(USER_ID, String(user.id));
+            setUserId(String(user.id));
+          }
+          message.success('success');
           await setReadoly(true);
         }}>
-        <ProFormText name="username" label="username" rules={[{ required: true }]} readonly={readonly} />
+        <ProFormText name="username" label="name" rules={[{ required: true }]} readonly={readonly} />
         <ProFormText name="email" label="email" rules={[{ required: true }, { type: 'email' }]} readonly={readonly} />
         <ProFormText name="phone" label="phone" rules={[{ required: true }]} readonly={readonly} />
         <ProFormRadio.Group
           label="gender"
           valueEnum={{
-            1: 'Male',
-            0: 'Female',
+            male: 'Male',
+            female: 'Female',
           }}
           name="gender"
           rules={[{ required: true }]}
           readonly={readonly}
         />
         <ProFormText name="address" label="address" rules={[{ required: true }]} readonly={readonly} />
+        {readonly && (
+          <Button type="primary" onClick={() => setReadoly(false)}>
+            Edit
+          </Button>
+        )}
       </ProForm>
-      {readonly && (
-        <Button type="primary" onClick={() => setReadoly(false)}>
-          Edit
-        </Button>
-      )}
     </div>
   );
 }
